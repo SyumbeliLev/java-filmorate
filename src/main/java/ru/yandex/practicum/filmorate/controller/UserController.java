@@ -44,7 +44,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<Collection<User>> findAll() {
-        log.c("Текущее количество пользователей: {}", users.size());
+        log.debug("Текущее количество пользователей: {}", users.size());
         return new ResponseEntity<>(users.values(),HttpStatusCode.valueOf(200));
     }
 
@@ -54,15 +54,18 @@ public class UserController {
 
     private User checkValidation(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank() & !user.getEmail().contains("@")) {
+            log.warn("Не валидная почта");
             throw new ValidationException("электронная почта не может быть пустой и должна содержать символ @.");
         }
         if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+            log.warn("Не валидный логин");
             throw new ValidationException("логин не может быть пустым и содержать пробелы.");
         }
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.warn("Не валидная дата рождения");
             throw new ValidationException("дата рождения не может быть в будущем.");
         }
         return user;
