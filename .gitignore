@@ -8,11 +8,13 @@
 *.tar.gz
 *.rar
 hs_err_pid*
+HELP.md
 out/
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
 
 ### STS ###
 .apt_generated
@@ -41,6 +43,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
 
 *.db
 db/*
