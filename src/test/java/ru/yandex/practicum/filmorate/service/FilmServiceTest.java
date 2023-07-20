@@ -39,8 +39,8 @@ public class FilmServiceTest {
         service.update(filmUpdate);
         assertIterableEquals(List.of(filmUpdate), service.getAll());
 
-        int invalid ID = 14;
-        filmUpdate.setId(invalid ID);
+        int invalidID = 14;
+        filmUpdate.setId(invalidID);
         FilmDoesNotExistException exp = assertThrows(FilmDoesNotExistException.class, () -> service.update(filmUpdate));
         assertEquals("Фильм с таким id не найден.", exp.getMessage());
     }
