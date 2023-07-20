@@ -39,8 +39,8 @@ public class UserServiceTest {
         service.update(userUpdate);
         assertIterableEquals(List.of(userUpdate), service.getAll());
 
-        int NOT_EXIST_ID = 14;
-        userUpdate.setId(NOT_EXIST_ID);
+        int invalidID = 14;
+        userUpdate.setId(invalidID);
         UserDoesNotExistException exp = assertThrows(UserDoesNotExistException.class, () -> service.update(userUpdate));
         assertEquals("Пользователь с таким id не найден.", exp.getMessage());
     }
