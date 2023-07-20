@@ -27,7 +27,7 @@ public class UserValidationTest {
     }
 
     @Test
-    public void createUserWithEmptyName() {//имя для отображения может быть пустым — в таком случае использовать логин;
+    public void createUserWithEmptyName() { //имя для отображения может быть пустым — в таком случае использовать логин;
         User nameEmpty = User.builder().id(1).login("empty").email("yandex@mail.ru").birthday(LocalDate.of(2020, 2, 2)).name("").build();
         User nameBlank = User.builder().id(1).login("blank").email("yandex@mail.ru").birthday(LocalDate.of(2020, 2, 2)).name("  ").build();
         User nameNull = User.builder().id(1).login("null").email("yandex@mail.ru").birthday(LocalDate.of(2020, 2, 2)).name(null).build();
