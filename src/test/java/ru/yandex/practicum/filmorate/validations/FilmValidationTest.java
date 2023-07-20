@@ -68,7 +68,7 @@ public class FilmValidationTest {
 
     @Test
     public void filmCreateValidateValue() {
-        Film validFilm = new Film(0, "name","description", LocalDate.now(), 111);
+        Film validFilm = new Film(0, "name", "description", LocalDate.now(), 111);
         assertDoesNotThrow(() -> validator.check(validFilm));
     }
 

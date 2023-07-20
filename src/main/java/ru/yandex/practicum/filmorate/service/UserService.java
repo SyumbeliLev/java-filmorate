@@ -8,7 +8,6 @@ import java.util.*;
 
 public class UserService {
     private final UserValidator validator = new UserValidator();
-
     private final Map<Integer, User> users = new HashMap<>();
     private int nextId = 1;
 

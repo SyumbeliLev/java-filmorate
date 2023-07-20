@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.service;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.execptions.FilmDoesNotExistException;
@@ -31,11 +30,11 @@ public class FilmServiceTest {
         assertEquals(1, service.getAll().size());
         service.create(filmSecond);
         assertEquals(2, service.getAll().size());
-        assertIterableEquals(List.of(filmFirst,filmSecond), service.getAll());
+        assertIterableEquals(List.of(filmFirst, filmSecond), service.getAll());
     }
 
     @Test
-    public void updateFilmTest(){
+    public void updateFilmTest() {
         service.create(filmFirst);
         service.update(filmUpdate);
         assertIterableEquals(List.of(filmUpdate), service.getAll());
@@ -47,13 +46,11 @@ public class FilmServiceTest {
     }
 
     @Test
-    public void getAllFilmTest(){
+    public void getAllFilmTest() {
         assertEquals(0, service.getAll().size());
         service.create(filmSecond);
         service.create(filmFirst);
-        assertIterableEquals(List.of(filmSecond,filmFirst),service.getAll());
+        assertIterableEquals(List.of(filmSecond, filmFirst), service.getAll());
 
     }
-
-
 }

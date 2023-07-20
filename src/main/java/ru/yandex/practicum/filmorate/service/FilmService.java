@@ -4,12 +4,10 @@ import ru.yandex.practicum.filmorate.execptions.FilmDoesNotExistException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.validator.FilmValidator;
 
-
 import java.util.*;
 
 public class FilmService {
     private final FilmValidator validator = new FilmValidator();
-
     private int nextId = 1;
     private final Map<Integer, Film> films = new HashMap<>();
 

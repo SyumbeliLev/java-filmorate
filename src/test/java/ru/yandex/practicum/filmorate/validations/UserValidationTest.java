@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.validations;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.execptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -70,7 +69,7 @@ public class UserValidationTest {
     }
 
     @Test
-    public void createValidUser(){
+    public void createValidUser() {
         User valid = User.builder().id(1).login("login").email("email@mail.ru").birthday(LocalDate.now()).name("name").build();
         assertDoesNotThrow(() -> validator.check(valid));
     }
