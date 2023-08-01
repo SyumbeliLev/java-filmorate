@@ -17,19 +17,19 @@ public class FilmValidationTest {
         Film filmBlankName = Film.builder()
                 .name(" ")
                 .description("DESCRIPTION")
-                .releaseDate(LocalDate.of(1895,12,28))
+                .releaseDate(LocalDate.of(1895, 12, 28))
                 .duration(100)
                 .build();
         Film filmEmpty = Film.builder()
                 .name(" ")
                 .description("DESCRIPTION")
-                .releaseDate(LocalDate.of(1895,12,28))
+                .releaseDate(LocalDate.of(1895, 12, 28))
                 .duration(100)
                 .build();
         Film filmNullName = Film.builder()
                 .name(null)
                 .description("DESCRIPTION")
-                .releaseDate(LocalDate.of(1895,12,28))
+                .releaseDate(LocalDate.of(1895, 12, 28))
                 .duration(100)
                 .build();
 
@@ -75,22 +75,22 @@ public class FilmValidationTest {
     @Test
 
     public void filmCreateFailReleaseData() { //дата релиза — не раньше 28 декабря 1895 года;
-        Film film27day =  Film.builder()
+        Film film27day = Film.builder()
                 .name("name")
                 .description("DESCRIPTION")
-                .releaseDate(LocalDate.of(1895,12,27))
+                .releaseDate(LocalDate.of(1895, 12, 27))
                 .duration(100)
                 .build();
         Film film28day = Film.builder()
                 .name("name")
                 .description("DESCRIPTION")
-                .releaseDate(LocalDate.of(1895,12,28))
+                .releaseDate(LocalDate.of(1895, 12, 28))
                 .duration(100)
                 .build();
-        Film film29day  = Film.builder()
+        Film film29day = Film.builder()
                 .name("name")
                 .description("DESCRIPTION")
-                .releaseDate(LocalDate.of(1895,12,29))
+                .releaseDate(LocalDate.of(1895, 12, 29))
                 .duration(100)
                 .build();
 
@@ -106,20 +106,20 @@ public class FilmValidationTest {
         Film filmNegative = Film.builder()
                 .name("name")
                 .description("DESCRIPTION")
-                .releaseDate(LocalDate.of(1895,12,28))
+                .releaseDate(LocalDate.of(1895, 12, 28))
                 .duration(-1)
                 .build();
 
         Film filmZero = Film.builder()
                 .name("name")
                 .description("DESCRIPTION")
-                .releaseDate(LocalDate.of(1895,12,28))
+                .releaseDate(LocalDate.of(1895, 12, 28))
                 .duration(0)
                 .build();
         Film filmPositive = Film.builder()
                 .name("name")
                 .description("DESCRIPTION")
-                .releaseDate(LocalDate.of(1895,12,28))
+                .releaseDate(LocalDate.of(1895, 12, 28))
                 .duration(1)
                 .build();
 
@@ -135,7 +135,7 @@ public class FilmValidationTest {
         Film validFilm = Film.builder()
                 .name("name")
                 .description("DESCRIPTION")
-                .releaseDate(LocalDate.of(1895,12,28))
+                .releaseDate(LocalDate.of(1895, 12, 28))
                 .duration(100)
                 .build();
         assertDoesNotThrow(() -> validator.check(validFilm));

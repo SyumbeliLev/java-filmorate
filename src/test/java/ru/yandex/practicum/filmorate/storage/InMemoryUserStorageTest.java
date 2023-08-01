@@ -55,10 +55,11 @@ public class InMemoryUserStorageTest {
         assertIterableEquals(List.of(userSecond, userFirst), service.getStorage().getAll());
 
     }
+
     @Test
-    public void getUserById(){
+    public void getUserById() {
         UserDoesNotExistException notFound = assertThrows(UserDoesNotExistException.class, () -> service.getStorage().getUserById(1));
-        assertEquals("Пользователь с id 1 не найден.",notFound.getMessage());
+        assertEquals("Пользователь с id 1 не найден.", notFound.getMessage());
 
         service.getStorage().create(userFirst);
         assertEquals(userFirst, service.getStorage().getUserById(1));

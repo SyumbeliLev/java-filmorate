@@ -13,71 +13,71 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserServiceTest {
-    User Vasya;
-    User Petya;
-    User Kolya;
-    User Masha;
-    User Varya;
+    User vasya;
+    User petya;
+    User kolya;
+    User masha;
+    User varya;
 
     UserService service;
 
     @BeforeEach
     public void create() {
-        Vasya = User.builder()
+        vasya = User.builder()
                 .name("Вася")
                 .birthday(LocalDate.now())
                 .email("Васяyandex@mail.ru")
                 .login("login")
                 .build();
-        Petya = User.builder()
+        petya = User.builder()
                 .name("Петя")
                 .birthday(LocalDate.now())
                 .email("Петяyandex@mail.ru")
                 .login("login")
                 .build();
-        Kolya = User.builder()
+        kolya = User.builder()
                 .name("Коля")
                 .birthday(LocalDate.now())
                 .email("Коляyandex@mail.ru")
                 .login("login")
                 .build();
 
-        Masha = User.builder()
+        masha = User.builder()
                 .name("Маша")
                 .birthday(LocalDate.now())
                 .email("Коляyandex@mail.ru")
                 .login("login")
                 .build();
 
-        Varya = User.builder()
+        varya = User.builder()
                 .name("Варя")
                 .birthday(LocalDate.now())
                 .email("Коляyandex@mail.ru")
                 .login("login")
                 .build();
         service = new UserService(new InMemoryUserStorage(new UserValidator()));
-        service.getStorage().create(Vasya);
-        service.getStorage().create(Petya);
-        service.getStorage().create(Kolya);
-        service.getStorage().create(Masha);
-        service.getStorage().create(Varya);
+        service.getStorage().create(vasya);
+        service.getStorage().create(petya);
+        service.getStorage().create(kolya);
+        service.getStorage().create(masha);
+        service.getStorage().create(varya);
     }
 
     @Test
     public void addFriendTest() {
         service.addToFriend(1, 2);
-        assertTrue(Petya.getFriends().contains(1L));
-        assertTrue(Vasya.getFriends().contains(2L));
-        assertEquals(Vasya.getFriends().size(), Petya.getFriends().size());
+        assertTrue(petya.getFriends().contains(1L));
+        assertTrue(vasya.getFriends().contains(2L));
+        assertEquals(vasya.getFriends().size(), petya.getFriends().size());
     }
 
     @Test
     public void removeFriendTest() {
         service.addToFriend(1, 2);
         service.removeFriend(1, 2);
-        assertEquals(0, Petya.getFriends().size());
-        assertEquals(0, Vasya.getFriends().size());
-        assertEquals(Vasya.getFriends().size(), Petya.getFriends().size());
+        assertEquals(0, petya.getFriends().size());
+        assertEquals(0, vasya.getFriends().size());
+        assertEquals(vasya.getFriends().size(), petya.getFriends().size());
     }
 
     @Test
@@ -90,8 +90,8 @@ public class UserServiceTest {
         service.addToFriend(5, 3);
         service.addToFriend(5, 4);
 
-        assertEquals(List.of(Petya, Kolya, Masha), service.getMutualFriends(1, 5));
-        assertTrue(Vasya.getFriends().containsAll(Varya.getFriends()));
+        assertEquals(List.of(petya, kolya, masha), service.getMutualFriends(1, 5));
+        assertTrue(vasya.getFriends().containsAll(varya.getFriends()));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class UserServiceTest {
         service.addToFriend(1, 3);
         service.addToFriend(1, 4);
 
-        assertEquals(List.of(Petya, Kolya, Masha), service.getListFriends(1));
+        assertEquals(List.of(petya, kolya, masha), service.getListFriends(1));
         assertEquals(3, service.getListFriends(1).size());
     }
 }

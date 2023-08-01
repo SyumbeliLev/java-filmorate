@@ -69,6 +69,6 @@ public class FilmServiceTest {
 
     @Test
     public void getPopularFilmsTest() {
-        assertEquals(List.of(film10,film9,film8,film7,film6,film5,film4,film3,film2,film1), filmService.getPopularFilms(10));
+        assertEquals(List.of(film10, film9, film8, film7, film6, film5, film4, film3, film2, film1), filmService.getPopularFilms(10));
     }
 }

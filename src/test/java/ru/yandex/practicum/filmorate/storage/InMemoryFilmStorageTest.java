@@ -75,9 +75,9 @@ public class InMemoryFilmStorageTest {
     }
 
     @Test
-    public void getFilmById(){
+    public void getFilmById() {
         FilmDoesNotExistException notFound = assertThrows(FilmDoesNotExistException.class, () -> service.getStorage().getFilmById(1));
-        assertEquals("Фильм с id: 1 не найден.",notFound.getMessage());
+        assertEquals("Фильм с id: 1 не найден.", notFound.getMessage());
 
         service.getStorage().create(filmFirst);
         assertEquals(filmFirst, service.getStorage().getFilmById(1));

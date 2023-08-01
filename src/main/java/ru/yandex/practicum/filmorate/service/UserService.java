@@ -22,12 +22,12 @@ public class UserService {
         return storage;
     }
 
-    public void addToFriend(Integer UserId, Integer friendId) {
-        User user = storage.getUserById(UserId);
+    public void addToFriend(Integer userId, Integer friendId) {
+        User user = storage.getUserById(userId);
         User friend = storage.getUserById(friendId);
 
         user.getFriends().add(Long.valueOf(friendId));
-        friend.getFriends().add(Long.valueOf(UserId));
+        friend.getFriends().add(Long.valueOf(userId));
     }
 
     public void removeFriend(Integer UserId, Integer friendId) {
