@@ -1,32 +1,51 @@
 package ru.yandex.practicum.filmorate.service;
 
-import ru.yandex.practicum.filmorate.execptions.FilmDoesNotExistException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.execption.IncorrectParameterException;
+import ru.yandex.practicum.filmorate.execption.UserDoesNotExistException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.validator.FilmValidator;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
-import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
+@Service
 public class FilmService {
-    private final FilmValidator validator = new FilmValidator();
-    private int nextId = 1;
-    private final Map<Integer, Film> films = new HashMap<>();
+    private final InMemoryFilmStorage storage;
 
-    public Film create(Film film) {
-        validator.check(film);
-        film.setId(nextId);
-        films.put(nextId, film);
-        nextId++;
-        return film;
+    @Autowired
+    public FilmService(InMemoryFilmStorage storage) {
+        this.storage = storage;
     }
 
-    public void update(Film film) {
-        validator.check(film);
-        if (films.containsKey(film.getId())) {
-            films.put(film.getId(), film);
-        } else throw new FilmDoesNotExistException("Фильм с таким id не найден.");
+    public InMemoryFilmStorage getStorage() {
+        return storage;
     }
 
-    public List<Film> getAll() {
-        return new ArrayList<>(films.values());
+    public void addLike(Integer filmId, Integer userId) {
+        Film film = storage.getFilmById(filmId);
+        film.getLikes().add(Long.valueOf(userId));
+    }
+
+    public void removeLike(Integer filmId, Integer userId) {
+        Film film = storage.getFilmById(filmId);
+        if (film.getLikes().contains(Long.valueOf(userId))) {
+            film.getLikes().remove(Long.valueOf(userId));
+        } else {
+            throw new UserDoesNotExistException("Пользователь с id: " + userId + " не найден");
+        }
+
+    }
+
+    public List<Film> getPopularFilms(Integer count) {
+        if (count <= 0) {
+            throw new IncorrectParameterException(count.toString());
+        }
+        return storage.getAll().stream().sorted((p0, p1) -> {
+            int likesValue1 = p0.getLikes().size();
+            int likesValue2 = p1.getLikes().size();
+            return Integer.compare(likesValue2, likesValue1);
+        }).limit(count).collect(Collectors.toList());
     }
 }

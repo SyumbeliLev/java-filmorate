@@ -1,12 +1,15 @@
 package ru.yandex.practicum.filmorate.validator;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.yandex.practicum.filmorate.execptions.ValidationException;
+import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.execption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 
 @Slf4j
+@Component
 public class FilmValidator {
     public void check(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
@@ -24,6 +27,9 @@ public class FilmValidator {
         if (film.getDuration() < 0) {
             log.warn("Не валидная продолжительность фильма");
             throw new ValidationException("Продолжительность фильма должна быть положительной.");
+        }
+        if (film.getLikes() == null) {
+            film.setLikes(new HashSet<>());
         }
     }
 }

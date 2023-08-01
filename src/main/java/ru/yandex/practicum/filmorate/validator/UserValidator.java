@@ -1,12 +1,15 @@
 package ru.yandex.practicum.filmorate.validator;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.yandex.practicum.filmorate.execptions.ValidationException;
+import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.execption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 
 @Slf4j
+@Component
 public class UserValidator {
     public void check(User user) {
         if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
@@ -23,6 +26,9 @@ public class UserValidator {
         }
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
+        }
+        if (user.getFriends() == null) {
+            user.setFriends(new HashSet<>());
         }
     }
 }

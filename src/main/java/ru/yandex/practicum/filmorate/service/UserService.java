@@ -1,32 +1,51 @@
 package ru.yandex.practicum.filmorate.service;
 
-import ru.yandex.practicum.filmorate.execptions.UserDoesNotExistException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.validator.UserValidator;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+@Service
 public class UserService {
-    private final UserValidator validator = new UserValidator();
-    private final Map<Integer, User> users = new HashMap<>();
-    private int nextId = 1;
+    private final InMemoryUserStorage storage;
 
-    public User create(User user) {
-        validator.check(user);
-        user.setId(nextId);
-        users.put(nextId, user);
-        nextId++;
-        return user;
+    @Autowired
+    public UserService(InMemoryUserStorage storage) {
+        this.storage = storage;
     }
 
-    public void update(User user) {
-        validator.check(user);
-        if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-        } else throw new UserDoesNotExistException("Пользователь с таким id не найден.");
+    public InMemoryUserStorage getStorage() {
+        return storage;
     }
 
-    public List<User> getAll() {
-        return new ArrayList<>(users.values());
+    public void addToFriend(Integer UserId, Integer friendId) {
+        User user = storage.getUserById(UserId);
+        User friend = storage.getUserById(friendId);
+
+        user.getFriends().add(Long.valueOf(friendId));
+        friend.getFriends().add(Long.valueOf(UserId));
+    }
+
+    public void removeFriend(Integer UserId, Integer friendId) {
+        User user = storage.getUserById(UserId);
+        User friend = storage.getUserById(friendId);
+
+        user.getFriends().remove(Long.valueOf(friendId));
+        friend.getFriends().remove(Long.valueOf(UserId));
+    }
+
+    public List<User> getMutualFriends(Integer userId, Integer otherId) {
+        Set<Long> user = storage.getUserById(userId).getFriends();
+        Set<Long> otherUser = storage.getUserById(otherId).getFriends();
+        return user.stream().filter(otherUser::contains).map(id -> storage.getUserById(Math.toIntExact(id))).collect(Collectors.toList());
+    }
+
+    public List<User> getListFriends(Integer userId) {
+        User user = storage.getUserById(userId);
+        return user.getFriends().stream().map(id -> storage.getUserById(Math.toIntExact(id))).collect(Collectors.toList());
     }
 }
