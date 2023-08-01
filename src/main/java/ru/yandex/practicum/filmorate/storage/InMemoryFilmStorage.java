@@ -1,10 +1,8 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.execption.FilmDoesNotExistException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.validator.FilmValidator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,17 +11,11 @@ import java.util.Map;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
-    private final FilmValidator validator;
+
     private int nextId = 1;
     private final Map<Integer, Film> films = new HashMap<>();
 
-    @Autowired
-    public InMemoryFilmStorage(FilmValidator validator) {
-        this.validator = validator;
-    }
-
     public Film create(Film film) {
-        validator.check(film);
         film.setId(nextId);
         films.put(nextId, film);
         nextId++;
@@ -31,7 +23,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     public void update(Film film) {
-        validator.check(film);
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
         } else throw new FilmDoesNotExistException("Фильм с id: " + film.getId() + " не найден.");

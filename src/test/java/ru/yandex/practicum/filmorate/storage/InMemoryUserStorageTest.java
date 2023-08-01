@@ -4,8 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.execption.UserDoesNotExistException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.validator.UserValidator;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,14 +11,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryUserStorageTest {
-    private UserService service;
+    private InMemoryUserStorage storage;
     private User userFirst;
     private User userSecond;
     private User userUpdate;
 
     @BeforeEach
     public void create() {
-        service = new UserService(new InMemoryUserStorage(new UserValidator()));
+        storage = new InMemoryUserStorage();
         userFirst = User.builder().id(0).login("login").email("email@mail.ru").birthday(LocalDate.now()).name("name").build();
         userSecond = User.builder().id(0).login("login").email("email@mail.ru").birthday(LocalDate.now()).name("name").build();
         userUpdate = User.builder().id(1).login("loginUpdate").email("gmail@mail.com").birthday(LocalDate.now()).name("nameUpdate").build();
@@ -28,40 +26,40 @@ public class InMemoryUserStorageTest {
 
     @Test
     public void createUserTest() {
-        service.getStorage().create(userFirst);
-        assertEquals(1, service.getStorage().getAll().size());
-        service.getStorage().create(userSecond);
-        assertEquals(2, service.getStorage().getAll().size());
-        assertIterableEquals(List.of(userFirst, userSecond), service.getStorage().getAll());
+        storage.create(userFirst);
+        assertEquals(1, storage.getAll().size());
+        storage.create(userSecond);
+        assertEquals(2, storage.getAll().size());
+        assertIterableEquals(List.of(userFirst, userSecond), storage.getAll());
     }
 
     @Test
     public void updateUserTest() {
-        service.getStorage().create(userFirst);
-        service.getStorage().update(userUpdate);
-        assertIterableEquals(List.of(userUpdate), service.getStorage().getAll());
+        storage.create(userFirst);
+        storage.update(userUpdate);
+        assertIterableEquals(List.of(userUpdate), storage.getAll());
 
         int invalidID = 14;
         userUpdate.setId(invalidID);
-        UserDoesNotExistException exp = assertThrows(UserDoesNotExistException.class, () -> service.getStorage().update(userUpdate));
+        UserDoesNotExistException exp = assertThrows(UserDoesNotExistException.class, () -> storage.update(userUpdate));
         assertEquals("Пользователь с id " + invalidID + " не найден.", exp.getMessage());
     }
 
     @Test
     public void getAllUserTest() {
-        assertEquals(0, service.getStorage().getAll().size());
-        service.getStorage().create(userSecond);
-        service.getStorage().create(userFirst);
-        assertIterableEquals(List.of(userSecond, userFirst), service.getStorage().getAll());
+        assertEquals(0, storage.getAll().size());
+        storage.create(userSecond);
+        storage.create(userFirst);
+        assertIterableEquals(List.of(userSecond, userFirst), storage.getAll());
 
     }
 
     @Test
     public void getUserById() {
-        UserDoesNotExistException notFound = assertThrows(UserDoesNotExistException.class, () -> service.getStorage().getUserById(1));
+        UserDoesNotExistException notFound = assertThrows(UserDoesNotExistException.class, () -> storage.getUserById(1));
         assertEquals("Пользователь с id 1 не найден.", notFound.getMessage());
 
-        service.getStorage().create(userFirst);
-        assertEquals(userFirst, service.getStorage().getUserById(1));
+        storage.create(userFirst);
+        assertEquals(userFirst, storage.getUserById(1));
     }
 }

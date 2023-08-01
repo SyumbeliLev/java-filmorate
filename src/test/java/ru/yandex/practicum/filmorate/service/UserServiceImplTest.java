@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.validator.UserValidator;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UserServiceTest {
+public class UserServiceImplTest {
     User vasya;
     User petya;
     User kolya;
@@ -55,12 +54,12 @@ public class UserServiceTest {
                 .email("Коляyandex@mail.ru")
                 .login("login")
                 .build();
-        service = new UserService(new InMemoryUserStorage(new UserValidator()));
-        service.getStorage().create(vasya);
-        service.getStorage().create(petya);
-        service.getStorage().create(kolya);
-        service.getStorage().create(masha);
-        service.getStorage().create(varya);
+        service = new UserServiceImpl(new InMemoryUserStorage());
+        service.createUser(vasya);
+        service.createUser(petya);
+        service.createUser(kolya);
+        service.createUser(masha);
+        service.createUser(varya);
     }
 
     @Test

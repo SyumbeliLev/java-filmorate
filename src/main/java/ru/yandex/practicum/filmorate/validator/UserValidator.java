@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.validator;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.execption.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -9,9 +8,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 
 @Slf4j
-@Component
 public class UserValidator {
-    public void check(User user) {
+    public static void check(User user) {
         if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.warn("Не валидная почта");
             throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @.");

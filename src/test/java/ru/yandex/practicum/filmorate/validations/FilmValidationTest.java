@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FilmValidationTest {
-    private final FilmValidator validator = new FilmValidator();
+    
 
     @Test
     public void filmCreateEmptyNameTest() { //название не может быть пустым;
@@ -33,9 +33,9 @@ public class FilmValidationTest {
                 .duration(100)
                 .build();
 
-        ValidationException epxBlank = assertThrows(ValidationException.class, () -> validator.check(filmBlankName));
-        ValidationException epxEmpty = assertThrows(ValidationException.class, () -> validator.check(filmEmpty));
-        ValidationException epxNullName = assertThrows(ValidationException.class, () -> validator.check(filmNullName));
+        ValidationException epxBlank = assertThrows(ValidationException.class, () -> FilmValidator.check(filmBlankName));
+        ValidationException epxEmpty = assertThrows(ValidationException.class, () -> FilmValidator.check(filmEmpty));
+        ValidationException epxNullName = assertThrows(ValidationException.class, () -> FilmValidator.check(filmNullName));
 
         assertEquals("Название не может быть пустым.", epxBlank.getMessage());
         assertEquals("Название не может быть пустым.", epxEmpty.getMessage());
@@ -65,10 +65,10 @@ public class FilmValidationTest {
                 .releaseDate(LocalDate.now())
                 .duration(100)
                 .build();
-        ValidationException epx201 = assertThrows(ValidationException.class, () -> validator.check(filmDescription201));
+        ValidationException epx201 = assertThrows(ValidationException.class, () -> FilmValidator.check(filmDescription201));
 
-        assertDoesNotThrow(() -> validator.check(filmDescription199));
-        assertDoesNotThrow(() -> validator.check(filmDescription200));
+        assertDoesNotThrow(() -> FilmValidator.check(filmDescription199));
+        assertDoesNotThrow(() -> FilmValidator.check(filmDescription200));
         assertEquals("Максимальная длина описания — 200 символов.", epx201.getMessage());
     }
 
@@ -94,10 +94,10 @@ public class FilmValidationTest {
                 .duration(100)
                 .build();
 
-        ValidationException exp27day = assertThrows(ValidationException.class, () -> validator.check(film27day));
+        ValidationException exp27day = assertThrows(ValidationException.class, () -> FilmValidator.check(film27day));
 
-        assertDoesNotThrow(() -> validator.check(film28day));
-        assertDoesNotThrow(() -> validator.check(film29day));
+        assertDoesNotThrow(() -> FilmValidator.check(film28day));
+        assertDoesNotThrow(() -> FilmValidator.check(film29day));
         assertEquals("Дата релиза — не раньше 28 декабря 1895 года.", exp27day.getMessage());
     }
 
@@ -123,10 +123,10 @@ public class FilmValidationTest {
                 .duration(1)
                 .build();
 
-        ValidationException expNegative = assertThrows(ValidationException.class, () -> validator.check(filmNegative));
+        ValidationException expNegative = assertThrows(ValidationException.class, () -> FilmValidator.check(filmNegative));
 
-        assertDoesNotThrow(() -> validator.check(filmZero));
-        assertDoesNotThrow(() -> validator.check(filmPositive));
+        assertDoesNotThrow(() -> FilmValidator.check(filmZero));
+        assertDoesNotThrow(() -> FilmValidator.check(filmPositive));
         assertEquals("Продолжительность фильма должна быть положительной.", expNegative.getMessage());
     }
 
@@ -138,7 +138,7 @@ public class FilmValidationTest {
                 .releaseDate(LocalDate.of(1895, 12, 28))
                 .duration(100)
                 .build();
-        assertDoesNotThrow(() -> validator.check(validFilm));
+        assertDoesNotThrow(() -> FilmValidator.check(validFilm));
     }
 
 }

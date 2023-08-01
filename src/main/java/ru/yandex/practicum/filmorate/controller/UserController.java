@@ -12,7 +12,6 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/users")
-
 public class UserController {
     private final UserService service;
 
@@ -23,27 +22,27 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        service.getStorage().create(user);
+        service.createUser(user);
         log.info("Добавление пользователя:" + user);
         return user;
     }
 
     @PutMapping
     public User update(@Valid @RequestBody User user) {
-        service.getStorage().update(user);
+        service.updateUser(user);
         log.info("Обновление пользователя с id: {}", user.getId());
         return user;
     }
 
     @GetMapping("/{id}")
     public User findUserById(@PathVariable Integer id) {
-        return service.getStorage().getUserById(id);
+        return service.getUserById(id);
     }
 
     @GetMapping
     public List<User> findAll() {
-        log.debug("Текущее количество пользователей: {}", service.getStorage().getAll().size());
-        return service.getStorage().getAll();
+        log.debug("Текущее количество пользователей: {}", service.getAllFilm().size());
+        return service.getAllFilm();
     }
 
     @PutMapping("/{id}/friends/{friendId}")

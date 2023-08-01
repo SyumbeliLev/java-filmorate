@@ -4,8 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.execption.FilmDoesNotExistException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.validator.FilmValidator;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,14 +11,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryFilmStorageTest {
-    private FilmService service;
+    private InMemoryFilmStorage storage;
     private Film filmFirst;
     private Film filmSecond;
     private Film filmUpdate;
 
     @BeforeEach
     public void create() {
-        service = new FilmService(new InMemoryFilmStorage(new FilmValidator()));
+        storage = new InMemoryFilmStorage();
         filmFirst = Film.builder()
                 .id(1)
                 .name("name")
@@ -46,40 +44,40 @@ public class InMemoryFilmStorageTest {
 
     @Test
     public void createFilmTest() {
-        service.getStorage().create(filmFirst);
-        assertEquals(1, service.getStorage().getAll().size());
-        service.getStorage().create(filmSecond);
-        assertEquals(2, service.getStorage().getAll().size());
-        assertIterableEquals(List.of(filmFirst, filmSecond), service.getStorage().getAll());
+        storage.create(filmFirst);
+        assertEquals(1, storage.getAll().size());
+        storage.create(filmSecond);
+        assertEquals(2, storage.getAll().size());
+        assertIterableEquals(List.of(filmFirst, filmSecond), storage.getAll());
     }
 
     @Test
     public void updateFilmTest() {
-        service.getStorage().create(filmFirst);
-        service.getStorage().update(filmUpdate);
-        assertIterableEquals(List.of(filmUpdate), service.getStorage().getAll());
+        storage.create(filmFirst);
+        storage.update(filmUpdate);
+        assertIterableEquals(List.of(filmUpdate), storage.getAll());
 
         int invalidID = 14;
         filmUpdate.setId(invalidID);
-        FilmDoesNotExistException exp = assertThrows(FilmDoesNotExistException.class, () -> service.getStorage().update(filmUpdate));
+        FilmDoesNotExistException exp = assertThrows(FilmDoesNotExistException.class, () -> storage.update(filmUpdate));
         assertEquals("Фильм с id: " + invalidID + " не найден.", exp.getMessage());
     }
 
     @Test
     public void getAllFilmTest() {
-        assertEquals(0, service.getStorage().getAll().size());
-        service.getStorage().create(filmSecond);
-        service.getStorage().create(filmFirst);
-        assertIterableEquals(List.of(filmSecond, filmFirst), service.getStorage().getAll());
+        assertEquals(0, storage.getAll().size());
+        storage.create(filmSecond);
+        storage.create(filmFirst);
+        assertIterableEquals(List.of(filmSecond, filmFirst), storage.getAll());
 
     }
 
     @Test
     public void getFilmById() {
-        FilmDoesNotExistException notFound = assertThrows(FilmDoesNotExistException.class, () -> service.getStorage().getFilmById(1));
+        FilmDoesNotExistException notFound = assertThrows(FilmDoesNotExistException.class, () -> storage.getFilmById(1));
         assertEquals("Фильм с id: 1 не найден.", notFound.getMessage());
 
-        service.getStorage().create(filmFirst);
-        assertEquals(filmFirst, service.getStorage().getFilmById(1));
+        storage.create(filmFirst);
+        assertEquals(filmFirst, storage.getFilmById(1));
     }
 }

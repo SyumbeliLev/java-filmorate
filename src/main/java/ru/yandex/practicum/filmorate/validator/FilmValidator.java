@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.validator;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.execption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -9,9 +8,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 
 @Slf4j
-@Component
 public class FilmValidator {
-    public void check(Film film) {
+    public static void check(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
             log.warn("Не валидное название");
             throw new ValidationException("Название не может быть пустым.");
