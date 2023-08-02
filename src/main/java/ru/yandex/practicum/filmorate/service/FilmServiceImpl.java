@@ -21,7 +21,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
 
-    public void createFilm(Film film){
+    public void createFilm(Film film) {
         FilmValidator.check(film);
         storage.create(film);
     }
@@ -31,11 +31,11 @@ public class FilmServiceImpl implements FilmService {
         storage.update(film);
     }
 
-    public List<Film> getAllFilm(){
+    public List<Film> getAllFilm() {
         return storage.getAll();
     }
 
-    public Film getFilmById(Integer id){
+    public Film getFilmById(Integer id) {
         return storage.getFilmById(id);
     }
 

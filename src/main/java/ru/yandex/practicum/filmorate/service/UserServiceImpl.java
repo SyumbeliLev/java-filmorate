@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final InMemoryUserStorage storage;
 
     @Autowired
@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService{
         this.storage = storage;
     }
 
-    public void createUser(User user){
+    public void createUser(User user) {
         UserValidator.check(user);
         storage.create(user);
     }
@@ -29,11 +29,11 @@ public class UserServiceImpl implements UserService{
         storage.update(user);
     }
 
-    public List<User> getAllFilm(){
+    public List<User> getAllFilm() {
         return storage.getAll();
     }
 
-    public User getUserById(Integer id){
+    public User getUserById(Integer id) {
         return storage.getUserById(id);
     }
 
