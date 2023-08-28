@@ -9,7 +9,7 @@ public interface UserService {
 
     void updateUser(User user);
 
-    List<User> getAllFilm();
+    List<User> getALlUser();
 
     User getUserById(Integer id);
 
