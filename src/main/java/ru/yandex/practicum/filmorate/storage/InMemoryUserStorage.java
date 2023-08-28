@@ -14,6 +14,7 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Integer, User> users = new HashMap<>();
     private int nextId = 1;
 
+    @Override
     public User create(User user) {
         user.setId(nextId);
         users.put(nextId, user);
@@ -21,16 +22,19 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
+    @Override
     public void update(User user) {
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
         } else throw new UserDoesNotExistException("Пользователь с id " + user.getId() + " не найден.");
     }
 
+    @Override
     public List<User> getAll() {
         return new ArrayList<>(users.values());
     }
 
+    @Override
     public User getUserById(Integer id) {
         if (users.containsKey(id)) {
             return users.get(id);

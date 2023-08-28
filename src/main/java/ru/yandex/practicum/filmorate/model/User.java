@@ -14,18 +14,15 @@ import java.util.Set;
 @Builder
 public class User {
     public int id;
-    @Email
-    @NotBlank
-    private String email;
+    @Builder.Default
+    private String name = null;
     @NotBlank
     private String login;
     @Past
     private LocalDate birthday;
-    @Builder.Default
-    private String name = null;
+    @Email
+    @NotBlank
+    private String email;
     @Builder.Default
     private Set<Long> friends = new HashSet<>();
-
-
-
 }
