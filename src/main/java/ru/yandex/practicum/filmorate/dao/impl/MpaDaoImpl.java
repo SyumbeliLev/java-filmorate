@@ -7,7 +7,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.MpaDao;
 import ru.yandex.practicum.filmorate.execption.MpaDoesNotExistException;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.entity.Mpa;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +17,9 @@ import java.util.List;
 @RequiredArgsConstructor
 class MpaDaoImpl implements MpaDao {
     private final JdbcTemplate jdbcTemplate;
-
     @Override
     public Mpa getMpaById(Integer mpaId) {
-        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM MPA WHERE MPA_ID = ?;", mpaId);
+        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM MPA WHERE mpa_id = ?;", mpaId);
         if (rs.next()) {
             return rowSetToMpa(rs);
         } else {
@@ -41,8 +40,8 @@ class MpaDaoImpl implements MpaDao {
 
     private Mpa rowSetToMpa(SqlRowSet rs) {
         Mpa mpa = new Mpa();
-        mpa.setId(rs.getInt("MPA_ID"));
-        mpa.setName(rs.getString("NAME"));
+        mpa.setId(rs.getInt("mpa_id"));
+        mpa.setName(rs.getString("name"));
         return mpa;
     }
 }

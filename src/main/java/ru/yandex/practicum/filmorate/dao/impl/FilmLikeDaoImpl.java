@@ -3,36 +3,48 @@ package ru.yandex.practicum.filmorate.dao.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.dao.FilmLikeDao;
-import ru.yandex.practicum.filmorate.dao.UserDao;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.execption.UserDoesNotExistException;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 class FilmLikeDaoImpl implements FilmLikeDao {
-    private final UserDao userDao;
-    private final FilmDao filmDao;
     private final JdbcTemplate jdbcTemplate;
 
     @Override
     public void addLike(Long filmId, Long userId) {
-        User user = userDao.getUserById(userId);
-        Film film = filmDao.getFilmById(filmId);
-        String sqlQuery = "INSERT INTO FILM_LIKE (FILM_ID, USER_ID) VALUES(?, ?);";
-        jdbcTemplate.update(sqlQuery, film.getId(), user.getId());
+        SqlRowSet sql = jdbcTemplate.queryForRowSet("SELECT * FROM FILM_LIKES WHERE film_id = ? AND user_id = ?", filmId, userId);
+        checkExistUserId(userId);
+        if (sql.next()) {
+            throw new RuntimeException("Вы уже ставили лайк этому фильму");
+        } else {
+            String sqlQueryAddFriend = "INSERT INTO FILM_LIKES (film_id, user_id) VALUES (?, ?)";
+            jdbcTemplate.update(sqlQueryAddFriend, filmId, userId);
+            log.info("Пользователь {} поставил лайк фильму {}", userId, filmId);
+        }
     }
 
     @Override
     public void removeLike(Long filmId, Long userId) {
-        User user = userDao.getUserById(userId);
-        Film film = filmDao.getFilmById(filmId);
-        String sqlQuery = "DELETE FROM FILM_LIKE WHERE FILM_ID = ? AND USER_ID = ?;";
-        if (jdbcTemplate.update(sqlQuery, film.getId(), user.getId()) > 0) {
-            log.info("Пользовать с id " + user.getId() + " удалил лайк у фильма с  id " + film.getId() + " .");
+        SqlRowSet sql = jdbcTemplate.queryForRowSet("SELECT * FROM FILM_LIKES WHERE film_id = ? AND user_id = ?", filmId, userId);
+        checkExistUserId(userId);
+        if (!sql.next()) {
+            throw new RuntimeException("Вы не ставили лайк этому фильму");
+        } else {
+            String sqlQueryAddFriend = "DELETE FROM FILM_LIKES WHERE film_id = ? AND user_id = ?";
+            jdbcTemplate.update(sqlQueryAddFriend, filmId, userId);
+            log.info("Пользователь {} удалил лайк у фильма {}", userId, filmId);
+        }
+    }
+
+    private void checkExistUserId(long userId) {
+        String query = "SELECT COUNT(*)  FROM USERS WHERE user_id = ?";
+        int count = jdbcTemplate.queryForObject(query, new Object[]{userId}, Integer.class);
+        if (count < 1) {
+            throw new UserDoesNotExistException("Пользователь с id " + userId + " не найден.");
         }
     }
 }

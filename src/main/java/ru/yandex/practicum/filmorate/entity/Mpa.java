@@ -1,9 +1,9 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.entity;
 
 import lombok.Data;
 
 @Data
-public class Genre {
+public class Mpa {
     private Integer id;
     private String name;
 }

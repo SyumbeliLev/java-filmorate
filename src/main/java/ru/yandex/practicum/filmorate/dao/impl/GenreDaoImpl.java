@@ -7,7 +7,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
 import ru.yandex.practicum.filmorate.execption.GenreDoesNotExistException;
-import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.entity.Genre;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ class GenreDaoImpl implements GenreDao {
 
     @Override
     public Genre getGenreById(Integer genreId) {
-        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM GENRE WHERE GENRE_ID = ?;", genreId);
+        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM GENRES WHERE genre_id = ?;", genreId);
         if (rs.next()) {
             return rowSetToGenre(rs);
         } else {
@@ -31,7 +31,7 @@ class GenreDaoImpl implements GenreDao {
 
     @Override
     public List<Genre> getAllGenre() {
-        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM GENRE");
+        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM GENRES");
         List<Genre> genresList = new ArrayList<>();
         while (rs.next()) {
             genresList.add(rowSetToGenre(rs));
@@ -41,8 +41,8 @@ class GenreDaoImpl implements GenreDao {
 
     private Genre rowSetToGenre(SqlRowSet rs) {
         Genre genre = new Genre();
-        genre.setId(rs.getInt("GENRE_ID"));
-        genre.setName(rs.getString("NAME"));
+        genre.setId(rs.getInt("genre_id"));
+        genre.setName(rs.getString("name"));
         return genre;
     }
 }

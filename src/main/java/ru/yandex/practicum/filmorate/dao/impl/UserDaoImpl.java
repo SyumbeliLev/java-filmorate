@@ -8,7 +8,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.execption.UserDoesNotExistException;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.entity.User;
 
 import java.util.*;
 
@@ -16,21 +16,19 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 class UserDaoImpl implements UserDao {
-
     private final JdbcTemplate jdbcTemplate;
-
     @Override
     public User create(User user) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("USER")
-                .usingGeneratedKeyColumns("USER_ID");
+                .withTableName("USERS")
+                .usingGeneratedKeyColumns("user_id");
         user.setId(simpleJdbcInsert.executeAndReturnKey(user.toMap()).longValue());
         return user;
     }
 
     @Override
     public User update(User user) {
-        String sql = "UPDATE PUBLIC.USER SET EMAIL = ?, LOGIN = ?, NAME = ?, BIRTHDAY = ? WHERE USER_ID = ?";
+        String sql = "UPDATE USERS SET email = ?, login = ?, name = ?, birthday = ? WHERE user_id = ?";
         Long userId = user.getId();
         int update = jdbcTemplate.update(sql, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), userId);
         if (update == 1) {
@@ -43,7 +41,7 @@ class UserDaoImpl implements UserDao {
 
     @Override
     public List<User> getAll() {
-        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM PUBLIC.USER");
+        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM USERS");
         List<User> userList = new ArrayList<>();
         while (rs.next()) {
             userList.add(rowSetToUser(rs));
@@ -53,7 +51,7 @@ class UserDaoImpl implements UserDao {
 
     @Override
     public User getUserById(Long userId) {
-        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM PUBLIC.USER WHERE USER_ID = ?", userId);
+        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM USERS WHERE user_id = ?", userId);
         if (rs.next()) {
             return rowSetToUser(rs);
         } else {
@@ -74,7 +72,7 @@ class UserDaoImpl implements UserDao {
     }
 
     public Set<Long> getSetFriendsId(Long userId) {
-        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM USER_FRIENDS WHERE USER_ID = ?", userId);
+        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM USER_FRIENDS WHERE user_id = ?", userId);
         Set<Long> friendsIdSet = new HashSet<>();
         while (rs.next()) {
             friendsIdSet.add(rs.getLong("FRIEND_ID"));

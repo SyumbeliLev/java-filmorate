@@ -6,7 +6,7 @@ MERGE INTO MPA (mpa_id, name)
            (5, 'NC-17');
 
 ------ наполнение данными таблицы genres
-MERGE INTO GENRE (genre_id, name)
+MERGE INTO GENRES (genre_id, name)
     VALUES (1, 'Комедия'),
            (2, 'Драма'),
            (3, 'Мультфильм'),

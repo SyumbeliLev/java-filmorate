@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +28,7 @@ public class Film {
     private Mpa mpa;
     private Set<Long> likes;
     private Set<Genre> genres;
+
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();

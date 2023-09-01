@@ -2,10 +2,9 @@ package ru.yandex.practicum.filmorate.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.dao.FriendsDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.entity.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.validator.UserValidator;
 
@@ -24,7 +23,6 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public void updateUser(User user) {
         UserValidator.check(user);
         userDao.update(user);
@@ -52,7 +50,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getMutualFriends(Long userId, Long otherId) {
-        return friendsDao.getMutualFriends(userId, otherId);
+       return friendsDao.getMutualFriends(userId, otherId);
     }
 
     @Override

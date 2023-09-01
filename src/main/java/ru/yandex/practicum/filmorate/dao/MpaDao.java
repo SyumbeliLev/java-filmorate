@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.dao;
 
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.entity.Mpa;
 
 import java.util.List;
 

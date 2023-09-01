@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.validator;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.execption.ValidationException;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.entity.User;
 
 import java.time.LocalDate;
 import java.util.HashSet;
