@@ -4,10 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.filmorate.execption.FilmDoesNotExistException;
-import ru.yandex.practicum.filmorate.execption.IncorrectParameterException;
-import ru.yandex.practicum.filmorate.execption.UserDoesNotExistException;
-import ru.yandex.practicum.filmorate.execption.ValidationException;
+import ru.yandex.practicum.filmorate.execption.*;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
 @RestControllerAdvice("ru.yandex.practicum.filmorate.controller")
@@ -21,7 +18,7 @@ public class ErrorHandler {
         );
     }
 
-    @ExceptionHandler({FilmDoesNotExistException.class, UserDoesNotExistException.class})
+    @ExceptionHandler({FilmDoesNotExistException.class, UserDoesNotExistException.class, GenreDoesNotExistException.class, MpaDoesNotExistException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotExistException(final RuntimeException e) {
         return new ErrorResponse(

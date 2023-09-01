@@ -1,17 +1,17 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-public class UserServiceImplTest {
+@RequiredArgsConstructor
+class UserServiceImplTest {
     User vasya;
     User petya;
     User kolya;
@@ -54,7 +54,6 @@ public class UserServiceImplTest {
                 .email("Коляyandex@mail.ru")
                 .login("login")
                 .build();
-        service = new UserServiceImpl(new InMemoryUserStorage());
         service.createUser(vasya);
         service.createUser(petya);
         service.createUser(kolya);
@@ -64,7 +63,7 @@ public class UserServiceImplTest {
 
     @Test
     public void addFriendTest() {
-        service.addToFriend(1, 2);
+        service.addToFriend(1L, 2L);
         assertTrue(petya.getFriends().contains(1L));
         assertTrue(vasya.getFriends().contains(2L));
         assertEquals(vasya.getFriends().size(), petya.getFriends().size());
@@ -72,34 +71,34 @@ public class UserServiceImplTest {
 
     @Test
     public void removeFriendTest() {
-        service.addToFriend(1, 2);
-        service.removeFriend(1, 2);
-        assertEquals(0, petya.getFriends().size());
-        assertEquals(0, vasya.getFriends().size());
+        service.addToFriend(1L, 2L);
+        service.removeFriend(1L, 2L);
+        assertEquals(0L, petya.getFriends().size());
+        assertEquals(0L, vasya.getFriends().size());
         assertEquals(vasya.getFriends().size(), petya.getFriends().size());
     }
 
     @Test
     public void getMultiplyFriendsTest() {
-        service.addToFriend(1, 2);
-        service.addToFriend(1, 3);
-        service.addToFriend(1, 4);
+        service.addToFriend(1L, 2L);
+        service.addToFriend(1L, 3L);
+        service.addToFriend(1L, 4L);
 
-        service.addToFriend(5, 2);
-        service.addToFriend(5, 3);
-        service.addToFriend(5, 4);
+        service.addToFriend(5L, 2L);
+        service.addToFriend(5L, 3L);
+        service.addToFriend(5L, 4L);
 
-        assertEquals(List.of(petya, kolya, masha), service.getMutualFriends(1, 5));
+        assertEquals(List.of(petya, kolya, masha), service.getMutualFriends(1L, 5L));
         assertTrue(vasya.getFriends().containsAll(varya.getFriends()));
     }
 
     @Test
     public void getListFriendsTest() {
-        service.addToFriend(1, 2);
-        service.addToFriend(1, 3);
-        service.addToFriend(1, 4);
+        service.addToFriend(1L, 2L);
+        service.addToFriend(1L, 3L);
+        service.addToFriend(1L, 4L);
 
-        assertEquals(List.of(petya, kolya, masha), service.getListFriends(1));
-        assertEquals(3, service.getListFriends(1).size());
+        assertEquals(service.getListFriends(1L), List.of(petya, kolya, masha));
+        assertEquals(3L, service.getListFriends(1L).size());
     }
 }

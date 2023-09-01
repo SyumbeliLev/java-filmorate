@@ -1,31 +1,35 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.impl.FilmDaoImpl;
+import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.filmorate.dao.FilmDao;
+import ru.yandex.practicum.filmorate.dao.FilmLikeDao;
 import ru.yandex.practicum.filmorate.execption.IncorrectParameterException;
-import ru.yandex.practicum.filmorate.execption.UserDoesNotExistException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.validator.FilmValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Service
-public class FilmServiceImpl implements FilmService {
-    private final FilmDaoImpl filmDao;
+@RequiredArgsConstructor
+class FilmServiceImpl implements FilmService {
+    private final FilmDao filmDao;
+    private final FilmLikeDao filmLikeDao;
 
     @Override
+    @Transactional
     public void createFilm(Film film) {
         FilmValidator.check(film);
         filmDao.create(film);
     }
 
     @Override
-    public void updateFilm(Film film) {
+    public Film updateFilm(Film film) {
         FilmValidator.check(film);
-        filmDao.update(film);
+        return filmDao.update(film);
     }
 
     @Override
@@ -34,27 +38,18 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public Film getFilmById(Integer id) {
+    public Film getFilmById(Long id) {
         return filmDao.getFilmById(id);
     }
 
     @Override
-    public void addLike(Integer filmId, Integer userId) {
-        Film film = filmDao.getFilmById(filmId);
-        film.getLikes().add(Long.valueOf(userId));
-
-        //filmDao.addLike(filmIdm, userId);
+    public void addLike(Long filmId, Long userId) {
+        filmLikeDao.addLike(filmId, userId);
     }
 
     @Override
-    public void removeLike(Integer filmId, Integer userId) {
-        Film film = filmDao.getFilmById(filmId);
-        if (film.getLikes().contains(Long.valueOf(userId))) {
-            film.getLikes().remove(Long.valueOf(userId));
-        } else {
-            throw new UserDoesNotExistException("Пользователь с id: " + userId + " не найден");
-        }
-
+    public void removeLike(Long filmId, Long userId) {
+        filmLikeDao.removeLike(filmId, userId);
     }
 
     @Override

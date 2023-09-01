@@ -15,8 +15,8 @@ public class UserValidationTest {
 
     @Test
     public void createUserFailLogin() {
-        User loginEmpty = User.builder().id(1).login("").email("yandex@mail.ru").birthday(LocalDate.of(2020, 2, 2)).name("Vasa").build();
-        User loginBlank = User.builder().id(1).login("ds ds ds").email("yandex@mail.ru").birthday(LocalDate.of(2020, 2, 2)).name("Vasa").build();
+        User loginEmpty = User.builder().id(1L).login("").email("yandex@mail.ru").birthday(LocalDate.of(2020, 2, 2)).name("Vasa").build();
+        User loginBlank = User.builder().id(1L).login("ds ds ds").email("yandex@mail.ru").birthday(LocalDate.of(2020, 2, 2)).name("Vasa").build();
 
         ValidationException expEmpty = assertThrows(ValidationException.class, () -> UserValidator.check(loginEmpty));
         ValidationException expBlank = assertThrows(ValidationException.class, () -> UserValidator.check(loginBlank));
@@ -27,9 +27,9 @@ public class UserValidationTest {
 
     @Test
     public void createUserWithEmptyName() {
-        User nameEmpty = User.builder().id(1).login("empty").email("yandex@mail.ru").birthday(LocalDate.of(2020, 2, 2)).name("").build();
-        User nameBlank = User.builder().id(1).login("blank").email("yandex@mail.ru").birthday(LocalDate.of(2020, 2, 2)).name("  ").build();
-        User nameNull = User.builder().id(1).login("null").email("yandex@mail.ru").birthday(LocalDate.of(2020, 2, 2)).name(null).build();
+        User nameEmpty = User.builder().id(1L).login("empty").email("yandex@mail.ru").birthday(LocalDate.of(2020, 2, 2)).name("").build();
+        User nameBlank = User.builder().id(1L).login("blank").email("yandex@mail.ru").birthday(LocalDate.of(2020, 2, 2)).name("  ").build();
+        User nameNull = User.builder().id(1L).login("null").email("yandex@mail.ru").birthday(LocalDate.of(2020, 2, 2)).name(null).build();
 
         UserValidator.check(nameEmpty);
         UserValidator.check(nameBlank);
@@ -42,9 +42,15 @@ public class UserValidationTest {
 
     @Test
     public void createUserFailBirthday() {
-        User dataMinusDay = User.builder().id(1).login("login").email("yandex@mail.ru").birthday(LocalDate.now().minusDays(1)).name("name").build();
-        User dataNow = User.builder().id(1).login("login").email("yandex@mail.ru").birthday(LocalDate.now()).name("name").build();
-        User dataPlusDay = User.builder().id(1).login("login").email("yandex@mail.ru").birthday(LocalDate.now().plusDays(1)).name("name").build();
+        User dataMinusDay = User.builder().id(1L).login("login").email("yandex@mail.ru").birthday(LocalDate.now().minusDays(1)).name("name").build();
+        User.UserBuilder builder = User.builder();
+        builder.id(1L);
+        builder.login("login");
+        builder.email("yandex@mail.ru");
+        builder.birthday(LocalDate.now());
+        builder.name("name");
+        User dataNow = builder.build();
+        User dataPlusDay = User.builder().id(1L).login("login").email("yandex@mail.ru").birthday(LocalDate.now().plusDays(1)).name("name").build();
 
         assertDoesNotThrow(() -> UserValidator.check(dataMinusDay));
         assertDoesNotThrow(() -> UserValidator.check(dataNow));
@@ -57,8 +63,8 @@ public class UserValidationTest {
 
     @Test
     public void createUserFailEmail() {
-        User emailText = User.builder().id(1).login("login").email("email").birthday(LocalDate.now()).name("name").build();
-        User emailBlank = User.builder().id(1).login("login").email("  ").birthday(LocalDate.now()).name("name").build();
+        User emailText = User.builder().id(1L).login("login").email("email").birthday(LocalDate.now()).name("name").build();
+        User emailBlank = User.builder().id(1L).login("login").email("  ").birthday(LocalDate.now()).name("name").build();
 
         ValidationException expText = assertThrows(ValidationException.class, () -> UserValidator.check(emailText));
         assertEquals("Электронная почта не может быть пустой и должна содержать символ @.", expText.getMessage());
@@ -69,7 +75,7 @@ public class UserValidationTest {
 
     @Test
     public void createValidUser() {
-        User valid = User.builder().id(1).login("login").email("email@mail.ru").birthday(LocalDate.now()).name("name").build();
+        User valid = User.builder().id(1L).login("login").email("email@mail.ru").birthday(LocalDate.now()).name("name").build();
         assertDoesNotThrow(() -> UserValidator.check(valid));
     }
 }

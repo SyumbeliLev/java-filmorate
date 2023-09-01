@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User findUserById(@PathVariable Integer id) {
+    public User findUserById(@PathVariable Long id) {
         return service.getUserById(id);
     }
 
@@ -42,25 +42,25 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public String addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+    public String addFriend(@PathVariable Long id, @PathVariable Long friendId) {
         service.addToFriend(id, friendId);
         return "Пользователи с id: " + id + " и  с id: " + friendId + ", теперь друзья";
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public String deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+    public String deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
         service.removeFriend(id, friendId);
         return "Пользователи с id: " + id + " и  с id: " + friendId + ", больше не друзья";
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> findListFriends(@PathVariable Integer id) {
+    public List<User> findListFriends(@PathVariable Long id) {
         log.debug("Текущее количество друзей пользователя: {}", service.getListFriends(id).size());
         return service.getListFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> findMultiplyFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
+    public List<User> findMultiplyFriends(@PathVariable Long id, @PathVariable Long otherId) {
         return service.getMutualFriends(id, otherId);
     }
 }

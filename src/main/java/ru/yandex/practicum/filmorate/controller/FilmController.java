@@ -16,6 +16,7 @@ import java.util.List;
 @RequestMapping("/films")
 public class FilmController {
     private final FilmService service;
+
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         service.createFilm(film);
@@ -25,9 +26,8 @@ public class FilmController {
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
-        service.updateFilm(film);
         log.info("Обновление фильма с id: {}", film.getId());
-        return film;
+        return service.updateFilm(film);
     }
 
     @GetMapping
@@ -37,12 +37,12 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Film findFilmById(@PathVariable Integer id) {
+    public Film findFilmById(@PathVariable Long id) {
         return service.getFilmById(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public Integer addLike(@PathVariable Integer id, @PathVariable Integer userId) {
+    public Integer addLike(@PathVariable Long id, @PathVariable Long userId) {
         log.debug("Текущее количество лайков фильма: {}", service.getFilmById(id).getLikes().size());
         service.addLike(id, userId);
         return service.getFilmById(id).getLikes().size();
@@ -50,7 +50,7 @@ public class FilmController {
 
 
     @DeleteMapping("/{id}/like/{userId}")
-    public Integer deleteLike(@PathVariable Integer id, @PathVariable Integer userId) {
+    public Integer deleteLike(@PathVariable Long id, @PathVariable Long userId) {
         log.debug("Текущее количество лайков фильма: {}", service.getFilmById(id).getLikes().size());
         service.removeLike(id, userId);
         return service.getFilmById(id).getLikes().size();

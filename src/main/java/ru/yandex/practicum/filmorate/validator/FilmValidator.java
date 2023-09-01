@@ -5,6 +5,7 @@ import ru.yandex.practicum.filmorate.execption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 
 @Slf4j
 public class FilmValidator {
@@ -25,11 +26,12 @@ public class FilmValidator {
             log.warn("Не валидная продолжительность фильма");
             throw new ValidationException("Продолжительность фильма должна быть положительной.");
         }
-        /*if (film.getLikes() == null) {
+        if (film.getGenres() == null) {
+            film.setGenres(new HashSet<>());
+        }
+        if (film.getLikes() == null) {
             film.setLikes(new HashSet<>());
         }
-        if (film.getGenre() == null) {
-            film.setGenre(new ArrayList<>());
-        }*/
+
     }
 }

@@ -1,9 +1,9 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,8 +11,9 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@RequiredArgsConstructor
 public class FilmServiceImplTest {
-    private final FilmService service = new FilmServiceImpl(new InMemoryFilmStorage());
+    private final FilmService service;
     public Film filmEmptyLike;
     public Film film1;
     public Film film2;
@@ -55,14 +56,14 @@ public class FilmServiceImplTest {
     public void addLikeTest() {
         assertEquals(Set.of(), filmEmptyLike.getLikes());
 
-        service.addLike(1, 1);
+        service.addLike(1L, 1L);
         assertEquals(1, filmEmptyLike.getLikes().size());
     }
 
     @Test
     public void removeLikeTest() {
-        service.addLike(1, 1);
-        service.removeLike(1, 1);
+        service.addLike(1L, 1L);
+        service.removeLike(1L, 1L);
         assertEquals(0, filmEmptyLike.getLikes().size());
     }
 
