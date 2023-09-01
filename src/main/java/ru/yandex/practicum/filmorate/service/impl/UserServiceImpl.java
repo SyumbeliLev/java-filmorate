@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.validator.UserValidator;
 
 import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 class UserServiceImpl implements UserService {
