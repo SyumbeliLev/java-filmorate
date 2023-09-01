@@ -120,9 +120,9 @@ class FilmDaoImpl implements FilmDao {
     private Film rowSetToFilm(SqlRowSet rs) {
         Long filmId = rs.getLong("film_id");
         Set<Genre> genres = getFilmGenres(filmId);
-        return Film.builder().id(filmId).name(rs.getString("name")).
-                description(rs.getString("description")).
-                releaseDate(Objects.requireNonNull(rs.getTimestamp("release_date")).toLocalDateTime().toLocalDate())
+        return Film.builder().id(filmId).name(rs.getString("name"))
+                .description(rs.getString("description"))
+                .releaseDate(Objects.requireNonNull(rs.getTimestamp("release_date")).toLocalDateTime().toLocalDate())
                 .duration(rs.getInt("duration"))
                 .rate(rs.getInt("rate")).mpa(getMpa(rs.getInt("MPA_ID")))
                 .genres(genres)
