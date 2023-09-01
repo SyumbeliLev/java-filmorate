@@ -10,8 +10,6 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FilmValidationTest {
-
-
     @Test
     public void filmCreateEmptyNameTest() { //название не может быть пустым;
         Film filmBlankName = Film.builder()

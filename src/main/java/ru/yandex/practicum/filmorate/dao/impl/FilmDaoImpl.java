@@ -19,6 +19,7 @@ import java.util.*;
 @RequiredArgsConstructor
 class FilmDaoImpl implements FilmDao {
     private final JdbcTemplate jdbcTemplate;
+
     @Override
     public Film create(Film film) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName("FILM").usingGeneratedKeyColumns("FILM_ID");
@@ -31,6 +32,7 @@ class FilmDaoImpl implements FilmDao {
         film.setId(filmId);
         return film;
     }
+
     @Override
     public Film update(Film film) {
         String sql = "UPDATE FILM SET NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ? , DURATION = ?, RATE = ?, MPA_ID = ? WHERE FILM_ID = ?";

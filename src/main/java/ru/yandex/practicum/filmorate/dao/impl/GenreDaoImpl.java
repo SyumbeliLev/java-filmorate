@@ -33,7 +33,7 @@ class GenreDaoImpl implements GenreDao {
     public List<Genre> getAllGenre() {
         SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM GENRE");
         List<Genre> genresList = new ArrayList<>();
-        while (rs.next()){
+        while (rs.next()) {
             genresList.add(rowSetToGenre(rs));
         }
         return genresList;
