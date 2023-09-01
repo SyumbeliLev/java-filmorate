@@ -6,10 +6,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.GenreDao;
-import ru.yandex.practicum.filmorate.execption.GenreDoesNotExistException;
 import ru.yandex.practicum.filmorate.entity.Genre;
+import ru.yandex.practicum.filmorate.execption.GenreDoesNotExistException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -31,18 +30,16 @@ class GenreDaoImpl implements GenreDao {
 
     @Override
     public List<Genre> getAllGenre() {
-        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM GENRES");
-        List<Genre> genresList = new ArrayList<>();
-        while (rs.next()) {
-            genresList.add(rowSetToGenre(rs));
-        }
-        return genresList;
+        String sql = "SELECT * FROM GENRES";
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+                Genre.builder().id(rs.getInt("genre_id")).name(rs.getString("name")).build());
     }
 
+
     private Genre rowSetToGenre(SqlRowSet rs) {
-        Genre genre = new Genre();
-        genre.setId(rs.getInt("genre_id"));
-        genre.setName(rs.getString("name"));
-        return genre;
+        return Genre.builder()
+                .name(rs.getString("name"))
+                .id(rs.getInt("genre_id"))
+                .build();
     }
 }

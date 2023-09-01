@@ -76,21 +76,27 @@ public class FilmorateDbTest {
                 .name("Olga Smith")
                 .birthday(LocalDate.of(2002, 1, 1))
                 .build();
-        mpa1 = new Mpa();
-        mpa2 = new Mpa();
-        mpa3 = new Mpa();
-        mpa1.setId(1);
-        mpa1.setName("J");
-        mpa2.setId(2);
-        mpa2.setName("J");
-        mpa3.setId(1);
-        mpa3.setName("J");
-        Genre genre1 = new Genre();
-        genre1.setId(1);
-        genre1.setName("Комедия");
-        Genre genre2 = new Genre();
-        genre2.setId(3);
-        genre2.setName("Мультфильм");
+        mpa1 = Mpa.builder()
+                .id(1)
+                .name("J")
+                .build();
+        mpa2 = Mpa.builder()
+                .id(2)
+                .name("J17")
+                .build();
+        mpa3 = Mpa.builder()
+                .id(3)
+                .name("J-12")
+                .build();
+
+        Genre genre1 = Genre.builder()
+                .id(1)
+                .name("Комедия")
+                .build();
+        Genre genre2 = Genre.builder()
+                .id(3)
+                .name("Мультфильм")
+                .build();
         genres = Set.of(genre1, genre2);
         filmAllHatesCris = Film.builder()
                 .name("All hates Cris")
@@ -99,7 +105,6 @@ public class FilmorateDbTest {
                 .releaseDate(LocalDate.of(1998, 1, 1))
                 .mpa(mpa1)
                 .genres(genres)
-                .likes(new HashSet<>())
                 .build();
         filmDiamondHand = Film.builder()
                 .name("Diamond hand")
@@ -108,7 +113,6 @@ public class FilmorateDbTest {
                 .releaseDate(LocalDate.of(1978, 1, 1))
                 .mpa(mpa2)
                 .genres(new HashSet<>())
-                .likes(new HashSet<>())
                 .build();
         filmTomAndJerry = Film.builder()
                 .name("Tom and Jerry")
@@ -117,10 +121,7 @@ public class FilmorateDbTest {
                 .releaseDate(LocalDate.of(1998, 1, 1))
                 .mpa(mpa3)
                 .genres(new HashSet<>())
-                .likes(new HashSet<>())
                 .build();
-
-
     }
 
 
@@ -365,13 +366,14 @@ public class FilmorateDbTest {
 
         // обновляем жанры и Mpa
         Set<Genre> genresNew = new HashSet<>();
-        Genre genre = new Genre();
-        genre.setId(1);
-        genre.setName("Комедия");
+        Genre genre = Genre.builder()
+                .id(1)
+                .name("Комедия")
+                .build();
         genresNew.add(genre);
-        Mpa mpaNew = new Mpa();
-        mpaNew.setId(4);
-        mpaNew.setName("R");
+        Mpa mpaNew = Mpa.builder()
+                .id(4).name("R")
+                .build();
         film.setGenres(genresNew);
         film.setMpa(mpaNew);
         film.setName("UPDATED");
@@ -401,7 +403,7 @@ public class FilmorateDbTest {
         Film film3 = filmDao.create(filmTomAndJerry);
 
 
-        List<Film> listFilms = filmDao.getAll();
+        List<Film> listFilms = filmDao.getAllFilm();
 
         assertThat(listFilms).asList().hasSize(3);
 
@@ -429,37 +431,12 @@ public class FilmorateDbTest {
     @Test
     public void shouldListFilmsEmpty() {
 
-        List<Film> listFilms = filmDao.getAll();
+        List<Film> listFilms = filmDao.getAllFilm();
 
         assertThat(listFilms).asList().hasSize(0);
         assertThat(listFilms).asList().isEmpty();
     }
 
-
-    @Test
-    public void shouldAddLike() {
-        User user1 = userDao.create(userAlex1);
-        Film film1 = filmDao.create(filmAllHatesCris);
-
-        filmLikeDao.addLike(film1.getId(), user1.getId());
-        Integer likes = film1.getLikes().size();
-
-        assertThat(likes).isEqualTo(0);
-    }
-
-    @Test
-    public void shouldDeleteLike() {
-        User user1 = userDao.create(userAlex1);
-        Film film1 = filmDao.create(filmAllHatesCris);
-
-        filmLikeDao.addLike(film1.getId(), user1.getId());
-        filmLikeDao.removeLike(film1.getId(), user1.getId());
-
-        Integer likes = film1.getLikes().size();
-
-        assertThat(likes).isEqualTo(0);
-
-    }
 
     @Test
     public void shouldListMostPopularFilms() {

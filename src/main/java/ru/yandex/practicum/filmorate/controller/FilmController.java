@@ -42,18 +42,15 @@ public class FilmController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public Integer addLike(@PathVariable Long id, @PathVariable Long userId) {
-        log.debug("Текущее количество лайков фильма: {}", service.getFilmById(id).getLikes().size());
+    public void addLike(@PathVariable Long id, @PathVariable Long userId) {
         service.addLike(id, userId);
-        return service.getFilmById(id).getLikes().size();
+
     }
 
 
     @DeleteMapping("/{id}/like/{userId}")
-    public Integer deleteLike(@PathVariable Long id, @PathVariable Long userId) {
-        log.debug("Текущее количество лайков фильма: {}", service.getFilmById(id).getLikes().size());
+    public void deleteLike(@PathVariable Long id, @PathVariable Long userId) {
         service.removeLike(id, userId);
-        return service.getFilmById(id).getLikes().size();
     }
 
     @GetMapping("/popular")

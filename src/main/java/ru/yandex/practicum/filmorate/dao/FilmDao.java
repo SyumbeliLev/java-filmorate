@@ -9,7 +9,7 @@ public interface FilmDao {
 
     Film update(Film film);
 
-    List<Film> getAll();
+    List<Film> getAllFilm();
 
     Film getFilmById(Long id);
 

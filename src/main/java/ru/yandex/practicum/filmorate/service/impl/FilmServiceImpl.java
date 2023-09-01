@@ -30,7 +30,7 @@ class FilmServiceImpl implements FilmService {
 
     @Override
     public List<Film> getAllFilm() {
-        return filmDao.getAll();
+        return filmDao.getAllFilm();
     }
 
     @Override

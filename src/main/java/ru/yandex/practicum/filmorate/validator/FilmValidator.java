@@ -29,9 +29,5 @@ public class FilmValidator {
         if (film.getGenres() == null) {
             film.setGenres(new HashSet<>());
         }
-        if (film.getLikes() == null) {
-            film.setLikes(new HashSet<>());
-        }
-
     }
 }

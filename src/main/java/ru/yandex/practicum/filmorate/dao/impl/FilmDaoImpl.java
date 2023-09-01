@@ -7,10 +7,10 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
-import ru.yandex.practicum.filmorate.execption.FilmDoesNotExistException;
 import ru.yandex.practicum.filmorate.entity.Film;
 import ru.yandex.practicum.filmorate.entity.Genre;
 import ru.yandex.practicum.filmorate.entity.Mpa;
+import ru.yandex.practicum.filmorate.execption.FilmDoesNotExistException;
 
 import java.util.*;
 
@@ -51,20 +51,10 @@ class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public List<Film> getAll() {
-        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM FILMS");
-        List<Film> filmList = new ArrayList<>();
-        while (rs.next()) {
-            filmList.add(rowSetToFilm(rs, true));
-        }
-        return filmList;
-    }
-
-    @Override
     public Film getFilmById(Long filmId) {
         SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM FILMS WHERE film_id = ?;", filmId);
         if (rs.next()) {
-            return rowSetToFilm(rs, false);
+            return rowSetToFilm(rs);
         } else {
             log.info("Фильм с идентификатором {} не найден.", filmId);
             throw new FilmDoesNotExistException("Фильм с id: " + filmId + " не найден.");
@@ -72,26 +62,20 @@ class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public List<Film> getPopularFilms(Integer limit) {
-        String query = "SELECT f.*, COUNT(l.user_id) AS quantity " +
-                "FROM FILMS AS f " +
-                "LEFT JOIN FILM_LIKES AS l ON f.film_id = l.film_id " +
-                "GROUP BY f.film_id " +
-                "ORDER BY quantity DESC " +
-                "LIMIT ?";
+    public List<Film> getAllFilm() {
+        String query = "SELECT * FROM films";
+        Map<Long, Set<Genre>> filmIdGenres = getAllGenre();
+        Map<Long, Mpa> filmIdMpa = getAllMpa();
+        return jdbcTemplate.query(query, (rs, rowNum) -> Film.builder().id(rs.getLong("film_id")).name(rs.getString("name")).description(rs.getString("description")).releaseDate(Objects.requireNonNull(rs.getTimestamp("release_date")).toLocalDateTime().toLocalDate()).duration(rs.getInt("duration")).rate(rs.getInt("rate")).mpa(filmIdMpa.get(rs.getLong("film_id"))).genres(filmIdGenres.getOrDefault(rs.getLong("film_id"), new HashSet<>())).build());
+    }
 
-        return jdbcTemplate.query(query, (rs, rowNum) ->
-                Film.builder()
-                        .id(rs.getLong("film_id"))
-                        .name(rs.getString("name"))
-                        .description(rs.getString("description"))
-                        .releaseDate(Objects.requireNonNull(rs.getTimestamp("release_date")).toLocalDateTime().toLocalDate())
-                        .duration(rs.getInt("duration"))
-                        .rate(rs.getInt("rate"))
-                        .mpa(getAllMpa().get(rs.getLong("film_id")))
-                        .genres(getAllGenreHashMap().getOrDefault(rs.getLong("film_id"), new HashSet<>()))
-                        .likes(getAllLikes().get(rs.getLong("film_id")))
-                        .build(), limit);
+
+    @Override
+    public List<Film> getPopularFilms(Integer limit) {
+        String query = "SELECT f.*, COUNT(l.user_id) AS quantity FROM FILMS AS f LEFT JOIN FILM_LIKES AS l ON f.film_id = l.film_id GROUP BY f.film_id ORDER BY quantity DESC LIMIT ?";
+        Map<Long, Set<Genre>> filmIdGenres = getAllGenre();
+        Map<Long, Mpa> filmIdMpa = getAllMpa();
+        return jdbcTemplate.query(query, (rs, rowNum) -> Film.builder().id(rs.getLong("film_id")).name(rs.getString("name")).description(rs.getString("description")).releaseDate(Objects.requireNonNull(rs.getTimestamp("release_date")).toLocalDateTime().toLocalDate()).duration(rs.getInt("duration")).rate(rs.getInt("rate")).mpa(filmIdMpa.get(rs.getLong("film_id"))).genres(filmIdGenres.getOrDefault(rs.getLong("film_id"), new HashSet<>())).build(), limit);
     }
 
     private void addGenreIdToFilmGenre(Set<Genre> filmGenres, Long filmId) {
@@ -108,44 +92,22 @@ class FilmDaoImpl implements FilmDao {
         }
     }
 
-    private Film rowSetToFilm(SqlRowSet rs, boolean allFilm) {
+    private Film rowSetToFilm(SqlRowSet rs) {
         Long filmId = rs.getLong("film_id");
-        Set<Genre> genres;
-        Mpa mpa;
-        Set<Long> likes;
-        if (allFilm) {
-            genres = getAllGenreHashMap().getOrDefault(filmId, new HashSet<>());
-            mpa = getAllMpa().get(filmId);
-            likes = getAllLikes().getOrDefault(filmId, new HashSet<>());
-        } else {
-            likes = getLikesById(filmId);
-            mpa = getMpaById(filmId);
-            genres = getFilmGenresById(filmId);
-        }
-        return Film.builder()
-                .id(filmId)
-                .name(rs.getString("name"))
-                .description(rs.getString("description"))
-                .releaseDate(Objects.requireNonNull(rs.getTimestamp("release_date")).toLocalDateTime().toLocalDate())
-                .duration(rs.getInt("duration"))
-                .rate(rs.getInt("rate"))
-                .mpa(mpa)
-                .genres(genres)
-                .likes(likes)
-                .build();
+        Set<Genre> genres = getFilmGenresById(filmId);
+        Mpa mpa = getMpaById(filmId);
+        return Film.builder().id(filmId).name(rs.getString("name")).description(rs.getString("description")).releaseDate(Objects.requireNonNull(rs.getTimestamp("release_date")).toLocalDateTime().toLocalDate()).duration(rs.getInt("duration")).rate(rs.getInt("rate")).mpa(mpa).genres(genres).build();
     }
 
 
-    private HashMap<Long, Set<Genre>> getAllGenreHashMap() {
+    private Map<Long, Set<Genre>> getAllGenre() {
         SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT film_id, FG.genre_id, name FROM FILM_GENRES as FG INNER JOIN GENRES G2 on FG.genre_id = G2.genre_id");
-        HashMap<Long, Set<Genre>> filmsGenres = new HashMap<>();
+        Map<Long, Set<Genre>> filmsGenres = new HashMap<>();
         long filmId;
         while (rs.next()) {
-            Genre genre = new Genre();
+            Genre genre = Genre.builder().id(rs.getInt("genre_id")).name(rs.getString("name")).build();
             Set<Genre> genres = new HashSet<>();
             filmId = rs.getLong("film_id");
-            genre.setId(rs.getInt("genre_id"));
-            genre.setName(rs.getString("name"));
             if (filmsGenres.containsKey(filmId)) {
                 genres = filmsGenres.get(filmId);
             }
@@ -156,24 +118,15 @@ class FilmDaoImpl implements FilmDao {
     }
 
     private Set<Genre> getFilmGenresById(Long filmId) {
-        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT G2.genre_id, name FROM FILM_GENRES LEFT JOIN GENRES G2 on FILM_GENRES.genre_id = G2.genre_id WHERE film_id  = ? ORDER BY G2.genre_id ", filmId);
-        Set<Genre> genres = new HashSet<>();
-        while (rs.next()) {
-            Genre genre = new Genre();
-            genre.setId(rs.getInt("genre_id"));
-            genre.setName(rs.getString("name"));
-            genres.add(genre);
-        }
-        return genres;
+        String sqlFilm = "SELECT G2.genre_id, name FROM FILM_GENRES LEFT JOIN GENRES G2 on FILM_GENRES.genre_id = G2.genre_id WHERE film_id  = ? ORDER BY G2.genre_id ";
+        return new HashSet<>(jdbcTemplate.query(sqlFilm, (rs, rowNum) -> Genre.builder().id(rs.getInt("genre_id")).name(rs.getString("name")).build(), filmId));
     }
 
-    private HashMap<Long, Mpa> getAllMpa() {
+    private Map<Long, Mpa> getAllMpa() {
         SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT film_id, M.mpa_id, M.name FROM FILMS INNER JOIN MPA M on FILMS.mpa_id = M.mpa_id;");
-        HashMap<Long, Mpa> filmIdMpa = new HashMap<>();
+        Map<Long, Mpa> filmIdMpa = new HashMap<>();
         while (rs.next()) {
-            Mpa mpa = new Mpa();
-            mpa.setId(rs.getInt("mpa_id"));
-            mpa.setName(rs.getString("name"));
+            Mpa mpa = Mpa.builder().name(rs.getString("name")).id(rs.getInt("mpa_id")).build();
             filmIdMpa.put(rs.getLong("film_id"), mpa);
         }
         return filmIdMpa;
@@ -181,37 +134,10 @@ class FilmDaoImpl implements FilmDao {
 
     private Mpa getMpaById(Long filmId) {
         SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT film_id, M.mpa_id, M.name FROM FILMS INNER JOIN MPA M on FILMS.mpa_id = M.mpa_id WHERE film_id = ?", filmId);
-        Mpa mpa = new Mpa();
+        Mpa mpa = null;
         if (rs.next()) {
-            mpa.setName(rs.getString("name"));
-            mpa.setId(rs.getInt("mpa_id"));
+            mpa = Mpa.builder().id(rs.getInt("mpa_id")).name(rs.getString("name")).build();
         }
         return mpa;
-    }
-
-    private Set<Long> getLikesById(Long filmId) {
-        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM FILM_LIKES WHERE film_id = ?", filmId);
-        Set<Long> likes = new HashSet<>();
-        while (rs.next()) {
-            likes.add(rs.getLong("USER_ID"));
-        }
-        return likes;
-    }
-
-    private HashMap<Long, Set<Long>> getAllLikes() {
-        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT FILM_ID, USER_ID FROM FILM_LIKES");
-        HashMap<Long, Set<Long>> filmsLikes = new HashMap<>();
-        Set<Long> likes;
-        while (rs.next()) {
-            likes = new HashSet<>();
-            Long filmId = rs.getLong("film_id");
-            Long userId = rs.getLong("user_id");
-            if (filmsLikes.containsKey(filmId)) {
-                likes = filmsLikes.get(filmId);
-            }
-            likes.add(userId);
-            filmsLikes.put(filmId, likes);
-        }
-        return filmsLikes;
     }
 }

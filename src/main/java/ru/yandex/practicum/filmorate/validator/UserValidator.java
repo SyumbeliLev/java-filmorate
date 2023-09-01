@@ -1,11 +1,10 @@
 package ru.yandex.practicum.filmorate.validator;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.yandex.practicum.filmorate.execption.ValidationException;
 import ru.yandex.practicum.filmorate.entity.User;
+import ru.yandex.practicum.filmorate.execption.ValidationException;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 
 @Slf4j
 public class UserValidator {
@@ -24,9 +23,6 @@ public class UserValidator {
         }
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
-        }
-        if (user.getFriends() == null) {
-            user.setFriends(new HashSet<>());
         }
     }
 }

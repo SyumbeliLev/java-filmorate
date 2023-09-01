@@ -85,19 +85,32 @@ ALTER TABLE USER_FRIENDS
     ADD CONSTRAINT if not exists USER_FRIENDS_ID_FK FOREIGN KEY (friend_id) REFERENCES USERS (user_id);
 
 
+SELECT F.film_id,
+       F.name  as film_name,
+       description,
+       duration,
+       release_date,
+       rate,
+       G2.genre_id,
+       G2.name as genre_name,
+       F.mpa_id,
+       M.name  as mpa_name
+FROM FILM_GENRES as FG
+         INNER JOIN GENRES G2 on FG.genre_id = G2.genre_id
+         join FILMS F on FG.film_id = F.film_id
+         join MPA M on F.mpa_id = M.mpa_id;
 
-SELECT *
-FROM USERS
-WHERE user_id in (SELECT friend_id
-                  FROM USERS
-                           INNER JOIN USER_FRIENDS UF on USERS.user_id = UF.user_id
-                  WHERE UF.user_id = 1);
+
+SELECT *,
+       COUNT(l.user_id) AS quantity
+FROM FILMS AS f
+         LEFT JOIN FILM_LIKES AS l ON f.film_id = l.film_id
 
 
-SELECT *
-FROM USERS
-WHERE user_id in (SELECT us1.FRIEND_ID
-                  FROM USER_FRIENDS AS us1
-                           JOIN USER_FRIENDS AS us2 ON us1.FRIEND_ID = us2.FRIEND_ID
-                  WHERE us1.USER_ID = 1
-                    AND us2.USER_ID = 2);
+GROUP BY f.film_id
+ORDER BY quantity DESC
+LIMIT 2;
+
+
+SELECT f.*, COUNT(l.user_id) AS quantity FROM FILMS AS f LEFT JOIN FILM_LIKES AS l ON f.film_id = l.film_id GROUP BY f.film_id ORDER BY quantity DESC LIMIT 2;
+

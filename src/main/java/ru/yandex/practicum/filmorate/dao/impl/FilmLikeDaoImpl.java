@@ -41,10 +41,10 @@ class FilmLikeDaoImpl implements FilmLikeDao {
     }
 
     private void checkExistUserId(long userId) {
-        String query = "SELECT COUNT(*)  FROM USERS WHERE user_id = ?";
-        int count = jdbcTemplate.queryForObject(query, new Object[]{userId}, Integer.class);
-        if (count < 1) {
-            throw new UserDoesNotExistException("Пользователь с id " + userId + " не найден.");
+        SqlRowSet sqlUser = jdbcTemplate.queryForRowSet("SELECT user_id FROM users WHERE user_id = ?", userId);
+        if (!sqlUser.next()) {
+            log.info("Пользователь с идентификатором {} не найден.", userId);
+            throw new UserDoesNotExistException(String.format("Пользователь с id: %d не найден", userId));
         }
     }
 }
