@@ -19,24 +19,24 @@ class MpaDaoImpl implements MpaDao {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public Mpa getMpaById(Integer MpaId) {
-        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM MPA WHERE MPA_ID = ?;", MpaId);
+    public Mpa getMpaById(Integer mpaId) {
+        SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM MPA WHERE MPA_ID = ?;", mpaId);
         if (rs.next()) {
             return rowSetToMpa(rs);
         } else {
-            log.info("Возрастное ограничение с идентификатором {} не найден.", MpaId);
-            throw new MpaDoesNotExistException("Возрастное ограничение с id: " + MpaId + " не найден.");
+            log.info("Возрастное ограничение с идентификатором {} не найден.", mpaId);
+            throw new MpaDoesNotExistException("Возрастное ограничение с id: " + mpaId + " не найден.");
         }
     }
 
     @Override
     public List<Mpa> getAllMpa() {
         SqlRowSet rs = jdbcTemplate.queryForRowSet("SELECT * FROM MPA");
-        List<Mpa> MpaList = new ArrayList<>();
+        List<Mpa> mpaList = new ArrayList<>();
         while (rs.next()) {
-            MpaList.add(rowSetToMpa(rs));
+            mpaList.add(rowSetToMpa(rs));
         }
-        return MpaList;
+        return mpaList;
     }
 
     private Mpa rowSetToMpa(SqlRowSet rs) {
